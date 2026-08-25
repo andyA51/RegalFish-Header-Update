@@ -1,0 +1,974 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Regal Fish | Mega Menu Dev</title>
+        <meta name="description" content="Fresh, Chilled, Smoked &amp; Frozen fish and seafood home delivery around the UK, including smoked salmon, lobster, prawns, cod, haddock, crab and other shellfish.">
+        <link href="https://cdn11.bigcommerce.com/s-lz0jp6q42t/product_images/MicrosoftTeams-image%20%285%29.png?t&#x3D;1686746360" rel="shortcut icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script>
+            document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+        </script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.bunny.net/css?family=gloock:400" rel="stylesheet">
+
+        <style type="text/css" media="screen, print">
+            @font-face {
+            font-family: "Calisga";
+                    src: url("https://cdn11.bigcommerce.com/s-lz0jp6q42t/content/calisga.ttf");
+                }
+        </style>
+
+        <link data-stencil-stylesheet href="assets/theme.css" rel="stylesheet">
+
+        <style>
+            body,
+            .accordion-navigation > a,
+            .accordion-title,
+            .account-product-detail-heading,
+            .account-product-subtitle,
+            .button,
+            .cart-total-grandTotal,
+            .compareTable-heading,
+            .form-label--alternate,
+            .header-logo-text,
+            .modal--alert,
+            .paymentMethodForm-heading,
+            .productView-info-name,
+            h1, h2, h3, h4, h5, h6 {
+                font-family: Outfit, sans-serif;
+            }
+        </style>
+                    <style id="megaMenuOverrides">
+            /* ===== Fish Society-style mega dropdown (Regal palette) ===== */
+            /* ===== 3 breakpoints: desktop (>1200), tablet (1026-1200), mobile (<=1025) ===== */
+            .navPages-item--mega { position: static; }
+
+            .header .header--inner {
+                padding: 1rem 1.5rem 0;
+                grid-gap: 0.5rem;
+            }
+            /* mobile menu panel is hidden everywhere unless explicitly opened below 1024px */
+            .mmenu { display: none !important; }
+
+            /* --- desktop defaults (logo / nav alignment) --- */
+            .header .header-logo__link { justify-content: flex-start; margin: 0; }
+            .header .navPages-container { align-self: center; margin-left: 2.75rem; height: auto; }
+            .header .navPages-container .navPages,
+            .header .navPages-container .navPages-list--mega { display: flex; align-items: center; }
+            .header .navPages-container .navPages-action { vertical-align: middle; }
+
+            /* --- nav font/padding: consolidate theme's 1200px + 1440px into single 980px --- */
+            @media (min-width: 980px) {
+                .navPages .navPages-action {
+                    font-size: 1.4rem;
+                    padding: .78571rem .85rem;
+                }
+            }
+
+            /* --- desktop: search bar fills available space, skip tablet row-below layout --- */
+            @media (min-width: 1025px) {
+                .header .header--inner {
+                    grid-template-areas: 'logo navigation search usernav';
+                    grid-template-columns: 150px 3fr 1fr auto;
+                    padding: 2rem 1.5rem;
+                }
+                .header .header-search { flex: 1; }
+                .header .header-search .form-field { width: 100%; }
+            }
+
+            .header__dropdown {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #fff;
+                padding: 0;
+                z-index: 210;
+                box-shadow: 0 8px 20px rgba(13, 58, 91, 0.08);
+            }
+
+            .header__dropdown::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: -10px;
+                height: 10px;
+            }
+
+            .navPages-item--mega:hover .header__dropdown,
+            .navPages-item--mega:focus-within .header__dropdown,
+            .navPages-item--mega.is-open .header__dropdown { display: block; }
+
+            .header__dropdown__container {
+                width: 96%;
+                max-width: 1410px;
+                margin: 0 auto;
+                border-top: 1px solid #f2f2f2;
+                padding: 30px 0 42px;
+            }
+
+            .header__dropdown__all-fish { display: flex; gap: 2rem; }
+
+            /* --- left rail: group types --- */
+            .header__dropdown__all-fish__types {
+                width: 240px;
+                flex-shrink: 0;
+                height: calc(100% + 60px);
+                margin: -30px 10px 0 0;
+                padding: 30px 0;
+            }
+
+            .header__dropdown__all-fish__type {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: #0d3a5b;
+                cursor: pointer;
+                padding: 14px 12px;
+                font-family: 'Gloock', serif;
+                font-size: 1.6rem;
+                line-height: 20px;
+                position: relative;
+            }
+
+            .header__dropdown__all-fish__type:not(:last-child) { border-bottom: 1px solid #f0ebe0; }
+
+            .header__dropdown__all-fish__type::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -1px;
+                height: 2px;
+                width: 100%;
+                background-color: #b8a77b;
+                transform: scaleX(0);
+                transform-origin: bottom right;
+                transition: transform 0.35s ease-out;
+            }
+
+            .header__dropdown__all-fish__type:hover { color: #b8a77b; }
+            .header__dropdown__all-fish__type:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+            .header__dropdown__all-fish__type-active { color: #b8a77b; }
+            .header__dropdown__all-fish__type-arrow { display: flex; align-items: center; transition: transform 0.35s ease-out; }
+            .header__dropdown__all-fish__type:hover .header__dropdown__all-fish__type-arrow { transform: translateX(4px); }
+            .header__dropdown__all-fish__type:hover .header__dropdown__all-fish__type-arrow svg path { stroke: #b8a77b; }
+
+            .header__dropdown__all-fish__type-image-container {
+                display: grid;
+                align-items: center;
+            }
+
+            /* --- middle: collections links panel --- */
+            .header__dropdown__all-fish__links {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .header__dropdown__all-fish__links-title,
+            .header__dropdown__all-fish__links-hot-this-week-title {
+                margin: 0;
+                padding: 12px 0 20px;
+                font-family: 'Gloock', serif;
+                font-size: 22px;
+                font-weight: 400;
+                color: #0d3a5b;
+                text-align: left;
+                letter-spacing: 0;
+            }
+
+            .header__dropdown__all-fish__links-container {
+                display: none;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                align-content: start;
+            }
+
+            .header__dropdown__all-fish__links-container.is-active { display: grid; }
+
+            .header__dropdown__all-fish__link { cursor: pointer; margin-bottom: 1rem; }
+
+            .header__dropdown__all-fish__link a {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: stretch;
+                gap: 0;
+                max-width: 220px;
+                height: 100%;
+                padding: 0;
+                border: 1px solid #eee7d6;
+                border-radius: 3px;
+                color: #0d3a5b;
+                font-family: Outfit, sans-serif;
+                font-size: 1.3rem;
+                font-weight: 400;
+                line-height: 20px;
+                text-decoration: none;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .header__dropdown__all-fish__link a::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                height: 2px;
+                width: 100%;
+                background-color: #b8a77b;
+                transform: scaleX(0);
+                transform-origin: bottom right;
+                transition: transform 0.35s ease-out;
+            }
+
+            .header__dropdown__all-fish__link a:hover { color: #01427f; }
+            .header__dropdown__all-fish__link a:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+
+            .header__dropdown__all-fish__link a span {
+                display: flex;
+                align-items: center;
+                padding: 10px 12px;
+            }
+
+            .header__dropdown__all-fish__link-image-clip {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .header__dropdown__all-fish__link-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                background: #eee7d6;
+                transition: transform 0.35s ease;
+            }
+
+            .header__dropdown__all-fish__link a:hover .header__dropdown__all-fish__link-image {
+                transform: scale(1.08);
+            }
+
+            /* --- right rail: Hot This Week promos --- */
+            .header__dropdown__all-fish__links-hot-this-week-container {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: 0;
+                padding-left: 40px;
+            }
+
+            .header__dropdown__all-fish__links-hot-this-week-box {
+                display: flex;
+                flex-direction: column;
+                row-gap: 15px;
+            }
+
+            .header__dropdown__all-fish__links-hot-this-week-container a { text-decoration: none; }
+
+            .header__promo-card {
+                position: relative;
+                display: flex;
+                align-items: stretch;
+                gap: 0;
+                width: 100%;
+                padding: 0;
+                border: 1px solid #eee7d6;
+                border-radius: 3px;
+                overflow: hidden;
+                transition: background-color 0.35s ease-out;
+            }
+
+            .header__promo-card:hover { background-color: #f6f1e4; }
+
+            .header__promo-card__image { flex: 0 0 110px; overflow: hidden; }
+            .header__promo-card__image img {
+                width: 110px;
+                height: 110px;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.35s ease-out;
+            }
+
+            .header__promo-card:hover .header__promo-card__image img { transform: scale(1.06); }
+            .header__promo-card:hover .header__promo-card__text-ctaText { color: #b8a77b; }
+
+            .header__promo-card__text {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                width: 100%;
+                height: auto;
+                padding: 12px 14px;
+            }
+
+            .header__promo-card__text > span {
+                color: #0d3a5b;
+                margin: 0 0 8px;
+                font-family: 'Gloock', serif;
+                font-size: 17px;
+                font-weight: 400;
+                line-height: 120%;
+            }
+
+            .header__promo-card__text-ctaText {
+                margin: 0;
+                font-family: Outfit, sans-serif;
+                font-size: 13px;
+                color: #01427f;
+                text-decoration: underline;
+            }
+
+            .header__promo-card__text-subtitle {
+                display: inline-block;
+                margin: 0 0 8px;
+                padding: 4px 8px;
+                border-radius: 3px;
+                background-color: #b8a77b;
+                color: #fff;
+                font-family: Outfit, sans-serif;
+                font-size: 11px;
+                font-weight: 500;
+                line-height: 1;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+            }
+
+            /* ============================================
+               TABLET  max-width: 1200px
+               ============================================ */
+            @media (max-width: 1200px) {
+                .header__dropdown__all-fish__links-hot-this-week-container { display: none; }
+                .header__dropdown__all-fish__links-container { grid-template-columns: repeat(2, 1fr); }
+                .header__dropdown__all-fish__types { width: 200px; margin-right: 0; }
+                .header__dropdown__all-fish__type { padding: 12px 10px; }
+                .header__dropdown__all-fish__link a { max-width: none; }
+            }
+
+            /* hide hamburger at exactly 1025px (theme shows it there, we want 1024px) */
+            @media (min-width: 1025px) and (max-width: 1025px) {
+                .mobileMenu-toggle { display: none !important; }
+            }
+
+            /* keep two-row mobile grid layout through 1024px (theme switches to single-row at 801px) */
+            @media (min-width: 801px) and (max-width: 1024px) {
+                .header .header--inner {
+                    grid-template-areas: 'mobilenav logo usernav' 'search search search';
+                    grid-template-columns: 1fr 140px 1fr;
+                    grid-gap: 1rem;
+                    padding-top: 1.5rem;
+                    padding-bottom: 1.5rem;
+                }
+            }
+
+            /* ============================================
+               MOBILE  max-width: 1024px
+               hamburger + nav switch + mmenu + dropdown mobile
+               ============================================ */
+            @media (max-width: 1024px) {
+                /* --- hamburger: gold circle matching basket.svg --- */
+                .mobileMenu-toggle {
+                    width: 41.19px;
+                    height: 41.19px;
+                    padding: 0;
+                    line-height: 0;
+                    border-radius: 50%;
+                    background-color: #b8a77b !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                }
+
+                .mobileMenu-toggle .mobileMenu-toggleIcon {
+                    position: absolute !important;
+                    top: 50% !important;
+                    left: 50% !important;
+                    transform: translate(-50%, -50%);
+                    width: 20px !important;
+                    height: 2px !important;
+                    line-height: 0;
+                    margin: 0;
+                }
+
+                .mobileMenu-toggle:not(.is-open) .mobileMenu-toggleIcon { background-color: #fff !important; }
+
+                .mobileMenu-toggle .mobileMenu-toggleIcon::before,
+                .mobileMenu-toggle .mobileMenu-toggleIcon::after {
+                    width: 20px !important;
+                    height: 2px !important;
+                    background-color: #fff !important;
+                    left: 0 !important;
+                }
+
+                .mobileMenu-toggle:not(.is-open) .mobileMenu-toggleIcon::before { top: -6px !important; bottom: auto !important; }
+                .mobileMenu-toggle:not(.is-open) .mobileMenu-toggleIcon::after { bottom: -6px !important; top: auto !important; }
+
+                /* --- theme nav hidden, self-contained mmenu active --- */
+                .navPages-container,
+                .navPages-container.is-open { display: none !important; }
+
+                .mmenu {
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    z-index: 300;
+                    background-color: #fff;
+                    border-top: 1px solid #eee7d6;
+                    box-shadow: 0 8px 20px rgba(13, 58, 91, 0.08);
+                    max-height: calc(100vh - 90px);
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .mmenu.is-open { display: block !important; }
+
+                .mmenu__inner { padding: 4px 0 14px; }
+
+                .mmenu__top,
+                .mmenu__group {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    padding: 15px 16px;
+                    border: 0;
+                    border-bottom: 1px solid #f0ebe0;
+                    background: none;
+                    font-family: 'Gloock', serif;
+                    color: #0d3a5b;
+                    text-align: left;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .mmenu__top { font-size: 1.7rem; }
+                .mmenu__top--club { color: #b8a77b; }
+
+                .mmenu__chev { flex-shrink: 0; color: #b8a77b; transition: transform 0.25s ease-out; }
+                .mmenu__top.is-expanded .mmenu__chev,
+                .mmenu__group.is-expanded .mmenu__chev { transform: rotate(180deg); }
+
+                .mmenu__shop { padding: 2px 0 6px; background-color: #faf7ef; }
+                .mmenu__shop .mmenu__group:last-of-type { border-bottom: 0; }
+
+                .mmenu__group { font-size: 1.55rem; padding-left: 24px; }
+
+                .mmenu__cards {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                    margin: 0 12px 12px;
+                    padding: 10px;
+                    background-color: #fff;
+                    border: 1px solid #eee7d6;
+                    border-radius: 3px;
+                }
+                .mmenu__cards[hidden] { display: none; }
+
+                .mmenu__card {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 5px;
+                    border: 1px solid #eee7d6;
+                    border-radius: 3px;
+                    background-color: #fff;
+                    color: #0d3a5b;
+                    font-family: Outfit, sans-serif;
+                    font-size: 1.3rem;
+                    line-height: 1.25;
+                    text-decoration: none;
+                }
+                .mmenu__card img { width: 44px; height: 44px; object-fit: cover; flex-shrink: 0; }
+
+                /* --- mega dropdown becomes mobile pill layout --- */
+                .header__dropdown {
+                    position: static;
+                    box-shadow: none;
+                    width: auto;
+                    background-color: #fff;
+                    border-top: 1px solid #eee7d6;
+                }
+
+                .header__dropdown::before { display: none; }
+
+                .navPages-item--mega:hover .header__dropdown,
+                .navPages-item--mega:focus-within .header__dropdown { display: none; }
+                .navPages-item--mega.is-open .header__dropdown { display: block; }
+
+                .navPages-container.is-open { overflow-y: auto; }
+
+                .header__dropdown__container { width: auto; max-width: none; padding: 12px 12px 16px; border-top: 0; }
+                .header__dropdown__all-fish { flex-direction: column; gap: 14px; }
+
+                /* group rows become tappable pills */
+                .header__dropdown__all-fish__types {
+                    width: auto;
+                    height: auto;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                }
+
+                .header__dropdown__all-fish__type {
+                    padding: 10px 13px;
+                    border: 1px solid #eee7d6;
+                    border-radius: 999px;
+                    font-family: Outfit, sans-serif;
+                    font-size: 1.4rem;
+                    line-height: 1;
+                }
+
+                .header__dropdown__all-fish__type:not(:last-child) { border-bottom: 1px solid #eee7d6; }
+
+                .header__dropdown__all-fish__type::after { display: none; }
+
+                .header__dropdown__all-fish__type:hover,
+                .header__dropdown__all-fish__type-active { color: #fff; background-color: #b8a77b; border-color: #b8a77b; }
+
+                .header__dropdown__all-fish__type-arrow { display: none; }
+
+                /* titles sit flush above their panel */
+                .header__dropdown__all-fish__links-title,
+                .header__dropdown__all-fish__links-hot-this-week-title {
+                    padding: 0 0 10px;
+                    font-size: 20px;
+                }
+
+                .header__dropdown__all-fish__link { margin-bottom: 0; }
+                .header__dropdown__all-fish__link a span { font-size: 1.4rem; }
+
+                /* cards: 2-col default, single-col on very small screens */
+                .header__dropdown__all-fish__links-container {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                }
+
+                @media (max-width: 480px) {
+                    .header__dropdown__all-fish__links-container { grid-template-columns: 1fr; }
+                    .header__dropdown__all-fish__link a { grid-template-columns: 42% 1fr; }
+                }
+            }
+
+        </style>
+
+<header class="header" role="banner">
+    <div class="header--inner">
+        <a href="#" class="mobileMenu-toggle" data-mobile-menu-toggle="menu">
+            <span class="mobileMenu-toggleIcon">Toggle menu</span>
+        </a>
+        <nav class="navUser">
+
+    <ul class="navUser-section navUser-section--alt">
+            <li class="navUser-item navUser-item--account">
+                <a class="navUser-action"
+                   href="https://regalfish.co.uk/login.php"
+                   aria-label="Sign in"
+                >
+                <img src="https://cdn11.bigcommerce.com/s-lz0jp6q42t/stencil/526afbd0-7ec4-013f-fe36-4aa1f79feaa5/e/20672ba0-7e9a-013f-3a9b-2e37e71a75be/icons/account.svg" alt="Account Icon">
+                </a>
+                </li>
+        <li class="navUser-item navUser-item--cart">
+            <a class="navUser-action"
+               data-cart-preview
+               data-dropdown="cart-preview-dropdown"
+               data-options="align:right"
+               href="https://regalfish.co.uk/cart.php"
+               aria-label="Cart with 0 items"
+            >
+                <span class="navUser-item-cartLabel"><img src="https://cdn11.bigcommerce.com/s-lz0jp6q42t/stencil/526afbd0-7ec4-013f-fe36-4aa1f79feaa5/e/20672ba0-7e9a-013f-3a9b-2e37e71a75be/icons/basket.svg" alt="Cart Icon"></span>
+                <span class="countPill cart-quantity"></span>
+            </a>
+
+            <div class="dropdown-menu" id="cart-preview-dropdown" data-dropdown-content aria-hidden="true"></div>
+        </li>
+    </ul>
+</nav>        <div class="header-logo">
+            <a href="https://regalfish.co.uk/" class="header-logo__link" data-header-logo-link>
+        <div class="header-logo-image-container">
+            <img class="header-logo-image"
+            src="https://cdn11.bigcommerce.com/s-lz0jp6q42t/stencil/526afbd0-7ec4-013f-fe36-4aa1f79feaa5/e/20672ba0-7e9a-013f-3a9b-2e37e71a75be/icons/logo-blue.svg"
+            alt="Regal Fish Supplies Limited"
+            title="Regal Fish Supplies Limited">
+        </div>
+</a>
+        </div>
+        <div class="navPages-container" id="menu" data-menu>
+            <nav class="navPages">
+    <ul class="navPages-list navPages-list--mega">
+                <li class="navPages-item navPages-item--mega">
+            <a class="navPages-action has-subMenu" href="https://regalfish.co.uk/brands/" aria-haspopup="true">
+                Shop Fish
+                <i class="icon navPages-action-moreIcon" aria-hidden="true" data-collapsible="navPages-Mega">
+                    <svg><use href="#icon-chevron-down" /></svg>
+                </i>
+            </a>
+            <div class="header__dropdown" id="navPages-Mega" role="menu">
+                <div class="header__dropdown__container">
+                    <div class="header__dropdown__all-fish">
+                        <div class="header__dropdown__all-fish__types">
+                    <div class="header__dropdown__all-fish__type header__dropdown__all-fish__type-active" data-target="fish" data-handle="/fish/">
+                        <div class="header__dropdown__all-fish__type-image-container">
+                            <span>Fish</span>
+                        </div>
+                        <div class="header__dropdown__all-fish__type-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.5L9.5 6L6 9.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    </div>
+                    <div class="header__dropdown__all-fish__type" data-target="shellfish" data-handle="/shellfish/">
+                        <div class="header__dropdown__all-fish__type-image-container">
+                            <span>Shellfish</span>
+                        </div>
+                        <div class="header__dropdown__all-fish__type-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.5L9.5 6L6 9.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    </div><div class="header__dropdown__all-fish__type" data-target="smoked" data-handle="/smoked-fish/">
+                        <div class="header__dropdown__all-fish__type-image-container">
+                            <span>Smoked &amp; Cured</span>
+                        </div>
+                        <div class="header__dropdown__all-fish__type-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.5L9.5 6L6 9.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    </div>
+                    <div class="header__dropdown__all-fish__type" data-target="prepared" data-handle="/prepared-fish/">
+                        <div class="header__dropdown__all-fish__type-image-container">
+                            <span>Prepared & Easy</span>
+                        </div>
+                        <div class="header__dropdown__all-fish__type-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.5L9.5 6L6 9.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    </div>
+                    <div class="header__dropdown__all-fish__type" data-target="pantry" data-handle="/pantry/">
+                        <div class="header__dropdown__all-fish__type-image-container">
+                            <span>Pantry & More</span>
+                        </div>
+                        <div class="header__dropdown__all-fish__type-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2.5L9.5 6L6 9.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    </div>
+                        </div>
+                        <div class="header__dropdown__all-fish__links">
+                            <h4 class="header__dropdown__all-fish__links-title">Categories</h4>
+                <div class="header__dropdown__all-fish__links-container is-active" data-panel="fish">
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/white-fish/"><span>White Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/white-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/oily-fish/"><span>Oily Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/oily-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/flatfish/"><span>Flatfish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/flatfish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/whole-fish/"><span>Whole Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/whole-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/fresh-fish/"><span>Fresh Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fresh-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/frozen-fish/"><span>Frozen Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/frozen-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/fish-portions/"><span>Fish Portions</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fish-portions.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/fish-fillets/"><span>Fish Fillets</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fish-fillets.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/fish/seasonal-picks/"><span>Seasonal Picks</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/seasonal-picks.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                </div>
+                                    <div class="header__dropdown__all-fish__links-container" data-panel="shellfish">
+                    <div class="header__dropdown__all-fish__link"><a href="/shellfish/prawns/"><span>Prawns</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/prawns.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/shellfish/crab/"><span>Crab</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/crab.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/shellfish/lobster/"><span>Lobster</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/lobster.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/shellfish/scallops/"><span>Scallops</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/scallops.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/shellfish/mussels/"><span>Mussels</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/mussels.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    </div>
+                    <div class="header__dropdown__all-fish__links-container" data-panel="smoked">
+                    <div class="header__dropdown__all-fish__link"><a href="/smoked-fish/smoked-salmon/"><span>Smoked Salmon</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/smoked-salmon.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/smoked-fish/smoked-haddock/"><span>Smoked Haddock</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/smoked-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/smoked-fish/cured-fish/"><span>Cured Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/cured-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    </div>
+<div class="header__dropdown__all-fish__links-container" data-panel="prepared">
+                    <div class="header__dropdown__all-fish__link"><a href="/prepared-fish/no-prep-needed/"><span>No Prep Needed</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/no-prep-needed.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/prepared-fish/chef-ready/"><span>Chef Ready</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/chef-ready.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/prepared-fish/fish-cakes/"><span>Fish Cakes</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fish-cakes.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/prepared-fish/fish-fingers/"><span>Fish Fingers</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fish-fingers.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/prepared-fish/battered-breaded/"><span>Battered & Breaded</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/battered-breaded.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                </div>
+                <div class="header__dropdown__all-fish__links-container" data-panel="pantry">
+                    <div class="header__dropdown__all-fish__link"><a href="/pantry/tinned-fish/"><span>Tinned Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/tinned-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/pantry/sauces-butters/"><span>Sauces & Butters</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/fish-sauce-butter.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/pantry/essentials/"><span>Pantry Essentials</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/pantry.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/pantry/accessories/"><span>Accessories</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/accessories.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                    <div class="header__dropdown__all-fish__link"><a href="/pantry/pet-treats/"><span>Pet Treats</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/pet-treats.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
+                </div>
+                        </div>
+                        <div class="header__dropdown__all-fish__links-hot-this-week-container">
+                            <h4 class="header__dropdown__all-fish__links-hot-this-week-title">Featured</h4>
+                            <div class="header__dropdown__all-fish__links-hot-this-week-box">
+                <a href="https://regalfish.co.uk/best-sellers/">
+                    <div class="header__promo-card">
+                        <div class="header__promo-card__image"><img src="assets/images/feature-best-sellers.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">From £6.95</p><span>Best Sellers</span><p class="header__promo-card__text-ctaText">Shop now</p></div>
+                    </div>
+                </a>
+                <a href="https://regalfish.co.uk/new/">
+                    <div class="header__promo-card">
+                        <div class="header__promo-card__image"><img src="assets/images/feature-new-in.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">Just landed</p><span>New Arrivals</span><p class="header__promo-card__text-ctaText">Discover</p></div>
+                    </div>
+                </a>
+                <a href="https://regalfish.co.uk/club-regal/">
+                    <div class="header__promo-card">
+                        <div class="header__promo-card__image"><img src="assets/images/feature-club-regal.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">Exclusive offers</p><span>Club Regal</span><p class="header__promo-card__text-ctaText">Join today</p></div>
+                    </div>
+                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="navPages-item">
+            <a class="navPages-action"
+               href="https://regalfish.co.uk/best-sellers/"
+               aria-label="Best Sellers">
+                Best Sellers
+            </a>
+        </li>
+        
+        <li class="navPages-item">
+            <a class="navPages-action"
+               href="https://regalfish.co.uk/recipes/"
+               aria-label="Recipes">
+                Recipes
+            </a>
+        </li>
+        
+        <li class="navPages-item nav-acccount hide-desktop">
+            <a class="navPages-action"
+               href="https://regalfish.co.uk/login.php"
+               aria-label="Sign in">
+                Sign in
+            </a>
+                or
+                <a class="navPages-action"
+                   href="https://regalfish.co.uk/login.php?action=create_account"
+                   aria-label="Register">
+                    Register
+                </a>
+        </li>
+        <li class="navPages-item"><a class="navPages-action"
+           href="/club-regal"
+           aria-label="Club Regal">
+            Club Regal
+        </a></li>
+    </ul>
+</nav>
+        </div>
+        <div class="header-search">
+            <div class="search">
+    <form class="form" onsubmit="return false" data-url="https://regalfish.co.uk/search.php" data-quick-search-form>
+        <fieldset class="form-fieldset">
+            <div class="form-field">
+                <input class="form-input"
+                       data-search-quick
+                       name="nav-menu-quick-search"
+                       id="nav-menu-quick-search"
+                       data-error-message="Search field cannot be empty."
+                       placeholder="Search products"
+                       autocomplete="off"
+                >
+                <img src="https://cdn11.bigcommerce.com/s-lz0jp6q42t/stencil/526afbd0-7ec4-013f-fe36-4aa1f79feaa5/e/20672ba0-7e9a-013f-3a9b-2e37e71a75be/icons/search-icon.svg" alt="Search Icon">
+            </div>
+        </fieldset>
+    </form>
+    <section class="quickSearchResults" data-bind="html: results"></section>
+    <p role="status"
+       aria-live="polite"
+       class="aria-description--hidden"
+       data-search-aria-message-predefined-text="product results for"
+    ></p>
+</div>
+        </div>
+    </div>
+
+        <!-- Mobile menu: self-contained rebuild -->
+        <nav class="mmenu" id="mmenu" aria-hidden="true">
+            <div class="mmenu__inner">
+                <button class="mmenu__top mmenu__top--shop" type="button" aria-expanded="false"><span>Shop Fish</span><svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <div class="mmenu__shop" hidden>
+                <button class="mmenu__group" type="button" aria-expanded="false">
+                    <span>Fish</span>
+                    <svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mmenu__cards" hidden>
+                    <a class="mmenu__card" href="/fish/white-fish/"><img src="assets/images/white-fish.jpg" alt="" loading="lazy"><span>White Fish</span></a>
+                    <a class="mmenu__card" href="/fish/oily-fish/"><img src="assets/images/oily-fish.jpg" alt="" loading="lazy"><span>Oily Fish</span></a>
+                    <a class="mmenu__card" href="/fish/flatfish/"><img src="assets/images/flatfish.jpg" alt="" loading="lazy"><span>Flatfish</span></a>
+                    <a class="mmenu__card" href="/fish/whole-fish/"><img src="assets/images/whole-fish.jpg" alt="" loading="lazy"><span>Whole Fish</span></a>
+                    <a class="mmenu__card" href="/fish/fresh-fish/"><img src="assets/images/fresh-fish.jpg" alt="" loading="lazy"><span>Fresh Fish</span></a>
+                    <a class="mmenu__card" href="/fish/frozen-fish/"><img src="assets/images/frozen-fish.jpg" alt="" loading="lazy"><span>Frozen Fish</span></a>
+                    <a class="mmenu__card" href="/fish/fish-portions/"><img src="assets/images/fish-portions.jpg" alt="" loading="lazy"><span>Fish Portions</span></a>
+                    <a class="mmenu__card" href="/fish/fish-fillets/"><img src="assets/images/fish-fillets.jpg" alt="" loading="lazy"><span>Fish Fillets</span></a>
+                    <a class="mmenu__card" href="/fish/seasonal-picks/"><img src="assets/images/seasonal-picks.jpg" alt="" loading="lazy"><span>Seasonal Picks</span></a>
+                </div>
+                <button class="mmenu__group" type="button" aria-expanded="false">
+                    <span>Shellfish</span>
+                    <svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mmenu__cards" hidden>
+                    <a class="mmenu__card" href="/shellfish/prawns/"><img src="assets/images/prawns.jpg" alt="" loading="lazy"><span>Prawns</span></a>
+                    <a class="mmenu__card" href="/shellfish/crab/"><img src="assets/images/crab.jpg" alt="" loading="lazy"><span>Crab</span></a>
+                    <a class="mmenu__card" href="/shellfish/lobster/"><img src="assets/images/lobster.jpg" alt="" loading="lazy"><span>Lobster</span></a>
+                    <a class="mmenu__card" href="/shellfish/scallops/"><img src="assets/images/scallops.jpg" alt="" loading="lazy"><span>Scallops</span></a>
+                    <a class="mmenu__card" href="/shellfish/mussels/"><img src="assets/images/mussels.jpg" alt="" loading="lazy"><span>Mussels</span></a>
+                </div>
+                <button class="mmenu__group" type="button" aria-expanded="false">
+                    <span>Smoked &amp; Cured</span>
+                    <svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mmenu__cards" hidden>
+                    <a class="mmenu__card" href="/smoked-fish/smoked-salmon/"><img src="assets/images/smoked-salmon.jpg" alt="" loading="lazy"><span>Smoked Salmon</span></a>
+                    <a class="mmenu__card" href="/smoked-fish/smoked-haddock/"><img src="assets/images/smoked-fish.jpg" alt="" loading="lazy"><span>Smoked Haddock</span></a>
+                    <a class="mmenu__card" href="/smoked-fish/cured-fish/"><img src="assets/images/cured-fish.jpg" alt="" loading="lazy"><span>Cured Fish</span></a>
+                </div>
+                <button class="mmenu__group" type="button" aria-expanded="false">
+                    <span>Prepared &amp; Easy</span>
+                    <svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mmenu__cards" hidden>
+                    <a class="mmenu__card" href="/prepared-fish/no-prep-needed/"><img src="assets/images/no-prep-needed.jpg" alt="" loading="lazy"><span>No Prep Needed</span></a>
+                    <a class="mmenu__card" href="/prepared-fish/chef-ready/"><img src="assets/images/chef-ready.jpg" alt="" loading="lazy"><span>Chef Ready</span></a>
+                    <a class="mmenu__card" href="/prepared-fish/fish-cakes/"><img src="assets/images/fish-cakes.jpg" alt="" loading="lazy"><span>Fish Cakes</span></a>
+                    <a class="mmenu__card" href="/prepared-fish/fish-fingers/"><img src="assets/images/fish-fingers.jpg" alt="" loading="lazy"><span>Fish Fingers</span></a>
+                    <a class="mmenu__card" href="/prepared-fish/battered-breaded/"><img src="assets/images/battered-breaded.jpg" alt="" loading="lazy"><span>Battered & Breaded</span></a>
+                </div>
+                <button class="mmenu__group" type="button" aria-expanded="false">
+                    <span>Pantry &amp; More</span>
+                    <svg class="mmenu__chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6L6 9.5L9.5 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="mmenu__cards" hidden>
+                    <a class="mmenu__card" href="/pantry/tinned-fish/"><img src="assets/images/tinned-fish.jpg" alt="" loading="lazy"><span>Tinned Fish</span></a>
+                    <a class="mmenu__card" href="/pantry/sauces-butters/"><img src="assets/images/fish-sauce-butter.jpg" alt="" loading="lazy"><span>Sauces & Butters</span></a>
+                    <a class="mmenu__card" href="/pantry/essentials/"><img src="assets/images/pantry.jpg" alt="" loading="lazy"><span>Pantry Essentials</span></a>
+                    <a class="mmenu__card" href="/pantry/accessories/"><img src="assets/images/accessories.jpg" alt="" loading="lazy"><span>Accessories</span></a>
+                    <a class="mmenu__card" href="/pantry/pet-treats/"><img src="assets/images/pet-treats.jpg" alt="" loading="lazy"><span>Pet Treats</span></a>
+                </div>
+            </div>
+                <a class="mmenu__top" href="https://regalfish.co.uk/best-sellers/">Best Sellers</a>
+                <a class="mmenu__top" href="https://regalfish.co.uk/recipes/">Recipes</a>
+                <a class="mmenu__top" href="https://regalfish.co.uk/login.php">Sign in</a>
+                <a class="mmenu__top" href="https://regalfish.co.uk/login.php?action=create_account">Register</a>
+                <a class="mmenu__top mmenu__top--club" href="/club-regal">Club Regal</a>
+            </div>
+        </nav>
+</header>
+<div data-content-region="header_bottom--global"></div>
+<div data-content-region="header_bottom"></div>
+        <main class="body " id="main-content" role="main" data-currency-code="GBP">
+        </main>
+
+                        <script>
+            (function () {
+                var item = document.querySelector('.navPages-item--mega');
+                var action = item.querySelector('.navPages-action');
+                var dropdown = item.querySelector('.header__dropdown');
+                var types = [].slice.call(item.querySelectorAll('.header__dropdown__all-fish__type'));
+                var panels = [].slice.call(item.querySelectorAll('.header__dropdown__all-fish__links-container'));
+                var hideTimer = null;
+
+                function isMobile() {
+                    return window.matchMedia('(max-width: 1024px)').matches;
+                }
+
+                function openPanel() {
+                    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+                    item.classList.add('is-open');
+                }
+
+                function scheduleClose() {
+                    if (hideTimer) clearTimeout(hideTimer);
+                    if (isMobile()) { item.classList.remove('is-open'); return; }
+                    hideTimer = setTimeout(function () {
+                        item.classList.remove('is-open');
+                        hideTimer = null;
+                    }, 250);
+                }
+
+                [item, dropdown].forEach(function (el) {
+                    el.addEventListener('mouseenter', function () {
+                        if (!isMobile()) openPanel();
+                    });
+                    el.addEventListener('mouseleave', scheduleClose);
+                });
+
+                types.forEach(function (t) {
+                    t.addEventListener('click', function () {
+                        if (t.classList.contains('header__dropdown__all-fish__type-active') && t.dataset.handle) {
+                            window.location.href = t.dataset.handle;
+                            return;
+                        }
+                        types.forEach(function (x) { x.classList.remove('header__dropdown__all-fish__type-active'); });
+                        t.classList.add('header__dropdown__all-fish__type-active');
+                        panels.forEach(function (p) {
+                            p.classList.toggle('is-active', p.dataset.panel === t.dataset.target);
+                        });
+                    });
+                });
+
+                action.addEventListener('click', function (e) {
+                    if (!isMobile()) return;
+                    e.preventDefault();
+                    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+                    item.classList.toggle('is-open');
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!isMobile() || item.contains(e.target)) return;
+                    item.classList.remove('is-open');
+                });
+
+                window.addEventListener('resize', function () {
+                    if (!isMobile()) item.classList.remove('is-open');
+                });
+            })();
+        </script>
+            <script>
+                /* mobile menu controller: hamburger, Shop Fish accordion, group accordions */
+            (function () {
+                var toggle = document.querySelector('.mobileMenu-toggle');
+                var menu = document.getElementById('mmenu');
+                if (!toggle || !menu) return;
+
+                function setMenu(open) {
+                    menu.classList.toggle('is-open', open);
+                    toggle.classList.toggle('is-open', open);
+                    menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+                }
+
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    setMenu(!menu.classList.contains('is-open'));
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!menu.classList.contains('is-open')) return;
+                    if (menu.contains(e.target) || toggle.contains(e.target)) return;
+                    setMenu(false);
+                });
+
+                window.addEventListener('resize', function () {
+                    if (!window.matchMedia('(max-width: 1024px)').matches) setMenu(false);
+                });
+
+                var shopBtn = menu.querySelector('.mmenu__top--shop');
+                var shopPanel = menu.querySelector('.mmenu__shop');
+                shopBtn.addEventListener('click', function () {
+                    var open = shopPanel.hidden;
+                    shopPanel.hidden = !open;
+                    shopBtn.classList.toggle('is-expanded', open);
+                    shopBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+
+                [].slice.call(menu.querySelectorAll('.mmenu__group')).forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var cards = btn.nextElementSibling;
+                        var open = cards.hidden;
+                        cards.hidden = !open;
+                        btn.classList.toggle('is-expanded', open);
+                        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    });
+                });
+            })();
+        </script>
+        </body>
+</html>
