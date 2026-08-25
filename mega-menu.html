@@ -260,8 +260,8 @@
             .header__dropdown__all-fish__links-hot-this-week-container {
                 display: flex;
                 flex-direction: column;
-                width: 100%;
-                max-width: 400px;
+                width: 30%;
+                min-width: 220px;
                 margin-left: auto;
                 margin-right: 0;
                 padding-left: 40px;
@@ -290,10 +290,10 @@
 
             .header__promo-card:hover { background-color: #f6f1e4; }
 
-            .header__promo-card__image { flex: 0 0 110px; overflow: hidden; }
+            .header__promo-card__image { flex: 0 0 35%; overflow: hidden; }
             .header__promo-card__image img {
-                width: 110px;
-                height: 110px;
+                width: 100%;
+                height: 100%;
                 object-fit: cover;
                 display: block;
                 transition: transform 0.35s ease-out;
@@ -342,17 +342,6 @@
                 line-height: 1;
                 letter-spacing: 0.04em;
                 text-transform: uppercase;
-            }
-
-            /* ============================================
-               TABLET  max-width: 1200px
-               ============================================ */
-            @media (max-width: 1200px) {
-                .header__dropdown__all-fish__links-hot-this-week-container { display: none; }
-                .header__dropdown__all-fish__links-container { grid-template-columns: repeat(2, 1fr); }
-                .header__dropdown__all-fish__types { width: 200px; margin-right: 0; }
-                .header__dropdown__all-fish__type { padding: 12px 10px; }
-                .header__dropdown__all-fish__link a { max-width: none; }
             }
 
             /* hide hamburger at exactly 1025px (theme shows it there, we want 1024px) */
@@ -651,7 +640,7 @@
                     </div>
                         </div>
                         <div class="header__dropdown__all-fish__links">
-                            <h4 class="header__dropdown__all-fish__links-title">Categories</h4>
+                            <h4 class="header__dropdown__all-fish__links-title" id="megaTitle">Fish</h4>
                 <div class="header__dropdown__all-fish__links-container is-active" data-panel="fish">
                     <div class="header__dropdown__all-fish__link"><a href="/fish/white-fish/"><span>White Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/white-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
                     <div class="header__dropdown__all-fish__link"><a href="/fish/oily-fish/"><span>Oily Fish</span><div class="header__dropdown__all-fish__link-image-clip"><img src="assets/images/oily-fish.jpg" alt="" loading="lazy" class="header__dropdown__all-fish__link-image" onerror="this.remove()"></div></a></div>
@@ -695,19 +684,19 @@
                             <div class="header__dropdown__all-fish__links-hot-this-week-box">
                 <a href="https://regalfish.co.uk/best-sellers/">
                     <div class="header__promo-card">
-                        <div class="header__promo-card__image"><img src="assets/images/feature-best-sellers.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__image"><img src="assets/images/feature-best-sellers.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
                         <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">From £6.95</p><span>Best Sellers</span><p class="header__promo-card__text-ctaText">Shop now</p></div>
                     </div>
                 </a>
                 <a href="https://regalfish.co.uk/new/">
                     <div class="header__promo-card">
-                        <div class="header__promo-card__image"><img src="assets/images/feature-new-in.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__image"><img src="assets/images/feature-new-in.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
                         <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">Just landed</p><span>New Arrivals</span><p class="header__promo-card__text-ctaText">Discover</p></div>
                     </div>
                 </a>
                 <a href="https://regalfish.co.uk/club-regal/">
                     <div class="header__promo-card">
-                        <div class="header__promo-card__image"><img src="assets/images/feature-club-regal.jpg" width="110" height="110" alt="" loading="lazy" onerror="this.remove()"></div>
+                        <div class="header__promo-card__image"><img src="assets/images/feature-club-regal.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
                         <div class="header__promo-card__text"><p class="header__promo-card__text-subtitle">Exclusive offers</p><span>Club Regal</span><p class="header__promo-card__text-ctaText">Join today</p></div>
                     </div>
                 </a>
@@ -891,6 +880,9 @@
                     el.addEventListener('mouseleave', scheduleClose);
                 });
 
+                var titleEl = document.getElementById('megaTitle');
+                var titles = { fish: 'Fish', shellfish: 'Shellfish', smoked: 'Smoked & Cured', prepared: 'Prepared & Easy', pantry: 'Pantry & More' };
+
                 types.forEach(function (t) {
                     t.addEventListener('click', function () {
                         if (t.classList.contains('header__dropdown__all-fish__type-active') && t.dataset.handle) {
@@ -902,6 +894,7 @@
                         panels.forEach(function (p) {
                             p.classList.toggle('is-active', p.dataset.panel === t.dataset.target);
                         });
+                        if (titleEl && titles[t.dataset.target]) titleEl.textContent = titles[t.dataset.target];
                     });
                 });
 

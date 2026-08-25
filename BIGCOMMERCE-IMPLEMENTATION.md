@@ -5,7 +5,7 @@
 This guide covers implementing the custom mega menu on the Regal Fish BigCommerce store. The implementation replaces the default Cornerstone flat-dropdown navigation with a three-region mega dropdown (left rail + card panels + promo rail) and a fully self-contained mobile menu.
 
 **Source file:** `mega-menu.html`
-**Reference file:** `index.html` (original Cornerstone nav — do not edit)
+**Reference file:** `original-header.html` (original Cornerstone nav — do not edit)
 
 ---
 
@@ -20,7 +20,7 @@ This guide covers implementing the custom mega menu on the Regal Fish BigCommerc
 | **Search bar** | Fixed 160px width | Fills available space (`1fr` in grid) |
 | **Fonts** | Outfit only | Outfit (body) + Gloock (headings, left rail) |
 | **Images** | None in nav | 30 product/category images |
-| **Breakpoints** | Theme defaults (801px / 1200px / 1440px) | 3 clean breakpoints: desktop (>1205px), tablet (1026–1200px), mobile (≤1024px) |
+| **Breakpoints** | Theme defaults (801px / 1200px / 1440px) | 2 breakpoints: desktop (>1024px), mobile (≤1024px) |
 
 ---
 
@@ -76,7 +76,6 @@ Add the contents of `<style id="megaMenuOverrides">` (lines 46–566 of `mega-me
 | **Base (no MQ)** | Desktop defaults: logo left-aligned, nav centered with margin, `.mmenu` hidden, mega dropdown base styles, left rail, card grid, promo rail |
 | `min-width: 980px` | Nav item font-size and padding (consolidates theme's 1200px + 1440px rules) |
 | `min-width: 1025px` | Full desktop grid: `logo navigation search usernav` with search filling available space. `padding: 2rem 1.5rem` |
-| `max-width: 1200px` | Tablet: promo rail hidden, 2-column card grid, narrower left rail (200px) |
 | `min-width: 801px` and `max-width: 1024px` | Two-row mobile grid forced (prevents theme switching to single-row) |
 | `max-width: 1025px` (hide at exactly 1025px) | Hamburger suppressed at 1025px to align with 1024px mobile switch |
 | `max-width: 1024px` | Full mobile: hamburger styled as gold circle, theme nav hidden, `.mmenu` active, pill-tab layout for dropdown, accordion groups |
@@ -90,6 +89,7 @@ Add the contents of `<style id="megaMenuOverrides">` (lines 46–566 of `mega-me
 - **Hamburger** — 41.19px gold circle (`#b8a77b`) with white bars, centered via absolute positioning + transform
 - **Card hover** — `scaleX(0 → 1)` underline bar animation at `0.35s ease-out`, matching theme's `.navPages-action:hover:after`
 - **Image zoom** — `scale(1.08)` on card hover, `scale(1.06)` on promo card hover
+- **Promo card sizing** — Container: `width: 30%; min-width: 220px`. Image: `flex: 0 0 35%; height: 100%; object-fit: cover` (scales with dropdown, images fill full card height)
 
 ---
 
@@ -139,7 +139,7 @@ Replace the entire `<header>` section in `templates/layout/base.html` with the h
       |     Each has: data-target + data-handle attributes, Gloock font, gold underline hover
       |
       |-- MIDDLE PANEL (.header__dropdown__all-fish__links) [flex: 1]
-      |     <h4>Categories</h4>
+      |     <h4 id="megaTitle">Fish</h4> — dynamically updates to match selected rail category
       |     5 panels (only one .is-active at a time):
       |       data-panel="fish"      → 9 cards
       |       data-panel="shellfish" → 5 cards
@@ -148,10 +148,10 @@ Replace the entire `<header>` section in `templates/layout/base.html` with the h
       |       data-panel="pantry"    → 5 cards
       |     Each card: 2-col grid (text + image), max-width 220px, hover animations
       |
-      |-- RIGHT RAIL (.header__dropdown__all-fish__links-hot-this-week-container) [400px]
+      |-- RIGHT RAIL (.header__dropdown__all-fish__links-hot-this-week-container) [30% width, min 220px]
             <h4>Featured</h4>
             3 promo cards: Best Sellers / New Arrivals / Club Regal
-            (hidden on tablet ≤1200px)
+            Images fill full height of card (flex: 0 0 35%, object-fit: cover)
 ```
 
 ### Mobile Menu Structure
@@ -193,9 +193,11 @@ Add both JS blocks from `mega-menu.html` (lines 926–1038) before the closing `
 
 Key behaviors:
 - **Hover intent:** `mouseenter` opens panel, `mouseleave` schedules close with 250ms delay (prevents flicker across gap)
-- **Left rail click:** If type already active AND has `data-handle`, navigates to URL. Otherwise swaps active panel
+- **Left rail click:** If type already active AND has `data-handle`, navigates to URL. Otherwise swaps active panel and updates `<h4 id="megaTitle">` text to match selected category
 - **Mobile tap:** Clicking `.navPages-action` toggles `.is-open` (prevents default link)
 - **Resize:** Forces close when viewport exceeds 1024px
+
+Title lookup map: `{ fish: 'Fish', shellfish: 'Shellfish', smoked: 'Smoked & Cured', prepared: 'Prepared & Easy', pantry: 'Pantry & More' }`
 
 ### Script 2: Mobile Menu Controller (~48 lines)
 
@@ -278,4 +280,5 @@ Ensure these category URLs exist in BigCommerce admin:
 - Every `<img>` in the dropdown and mmenu has `onerror="this.remove()"` for graceful degradation
 - The `group-*.jpg` images (5 files) exist in `assets/images/` but are **not currently used** — they were intended for left-rail group header images
 - The theme's `theme.css` must load **before** the mega menu overrides for correct cascade
-- The original `index.html` is a pristine reference — all development goes into `mega-menu.html`
+- The original `original-header.html` is a pristine reference — all development goes into `mega-menu.html`
+- `index.html` is the showcase page with the new header and download buttons
